@@ -1,0 +1,6 @@
+@SistemaElecciones.ApiRest_HostAddress = http://localhost:5178
+
+GET {{SistemaElecciones.ApiRest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
