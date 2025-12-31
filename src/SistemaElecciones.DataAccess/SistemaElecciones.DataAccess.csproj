@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SistemaElecciones.Common\SistemaElecciones.Common.csproj" />
+      <ProjectReference Include="..\SistemaElecciones.Entities\SistemaElecciones.Entities.csproj" />
+    </ItemGroup>
+
 </Project>
