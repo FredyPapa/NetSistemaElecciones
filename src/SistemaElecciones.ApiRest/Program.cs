@@ -48,7 +48,7 @@ builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 
 //Configuración de Scrutor para el mapeo de las interfaces e implementaciones
 builder.Services.Scan(s => s
-    .FromAssemblies(typeof(IUserService).Assembly, typeof(ICampaniaRepository).Assembly)
+    .FromAssemblies(typeof(IUserService).Assembly, typeof(ICampaniaRepository).Assembly, typeof(ICandidatoRepository).Assembly)
     .AddClasses(publicOnly:false)
     .UsingRegistrationStrategy(RegistrationStrategy.Skip)
     .AsMatchingInterface()
@@ -140,11 +140,23 @@ app.MapGet("/api/estadosCampania", (SistemaEleccionesDbContext context) =>
 });
 
 //Hacemos el llamado al DataSeeding
-
 await using (var scope = app.Services.CreateAsyncScope())
 {
-    await UserDataSeeder.SeedAsync(scope.ServiceProvider);
+    // 1. Obtenemos el proveedor de servicios
+    var services = scope.ServiceProvider;
+
+    // 2. OBTENEMOS EL CONTEXTO (Esta es la línea que te falta)
+    var context = services.GetRequiredService<SistemaEleccionesDbContext>();
+
+    // 3. Ejecutamos los seeders
+    await UserDataSeeder.SeedAsync(services);
+    await TrabajadorDataSeeder.SeedAsync(context);
 }
+/*await using (var scope = app.Services.CreateAsyncScope())
+{
+    await UserDataSeeder.SeedAsync(scope.ServiceProvider);
+    await TrabajadorDataSeeder.SeedAsync(context);
+}*/
 
 //Se ejecuta la Aplicación
 app.Run();
