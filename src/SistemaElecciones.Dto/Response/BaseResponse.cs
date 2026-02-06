@@ -6,7 +6,7 @@ public class BaseResponse
     public string ErrorMessage { get; set; } = string.Empty;
 }
 
-public class ResponseBase<T> : BaseResponse
+public class BaseResponse<T> : BaseResponse
 {
     public T? Data { get; set; }
 }

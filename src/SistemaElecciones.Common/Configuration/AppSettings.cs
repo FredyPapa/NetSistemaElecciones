@@ -11,3 +11,9 @@ public class Jwt
     public string Issuer { get; set; }
     public string Audience { get; set; }
 }
+
+public class StorageConfiguration
+{
+    public string Path { get; set; }
+    public string PublicUrl { get; set; }
+}

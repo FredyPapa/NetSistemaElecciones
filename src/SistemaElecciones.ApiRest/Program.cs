@@ -8,7 +8,9 @@ using Scrutor;
 using SistemaElecciones.Common.Configuration;
 using SistemaElecciones.DataAccess;
 using SistemaElecciones.Entities;
+using SistemaElecciones.Repositories.Interfaces;
 using SistemaElecciones.Services.Interfaces;
+using SistemaElecciones.Services.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,12 +48,18 @@ builder.Services.AddDbContext<AuthenticationDbContext>(options =>
 
 //Configuración de Scrutor para el mapeo de las interfaces e implementaciones
 builder.Services.Scan(s => s
-    .FromAssemblies(typeof(IUserService).Assembly)
+    .FromAssemblies(typeof(IUserService).Assembly, typeof(ICampaniaRepository).Assembly)
     .AddClasses(publicOnly:false)
     .UsingRegistrationStrategy(RegistrationStrategy.Skip)
     .AsMatchingInterface()
     .WithScopedLifetime()
 );
+
+//AUTOMMAPER
+builder.Services.AddAutoMapper(c =>
+{
+    c.AddMaps(typeof(CampaniaProfile).Assembly);
+});
 
 //Configuramos ASP.NET Identity Core
 builder.Services.AddIdentity<EleccionesIdentityUser, IdentityRole>(polices =>
@@ -108,6 +116,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();  //Redirecciona HTTP a HTTPS en caso exista
 
+app.UseStaticFiles();
+app.UseBlazorFrameworkFiles();
+
 app.UseRouting();
 
 //Agregamos el Middelware correspondiente al CORS
@@ -115,6 +126,8 @@ app.UseCors(corsConfiguration);
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapFallbackToFile("index.html");
 
 app.MapControllers();
 

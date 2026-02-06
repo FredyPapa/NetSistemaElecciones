@@ -1,0 +1,8 @@
+﻿#imagen-de-fondo {
+    margin-top: 1rem;
+    background-image: url('/assets/images/home-elecciones.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 60vh;
+}

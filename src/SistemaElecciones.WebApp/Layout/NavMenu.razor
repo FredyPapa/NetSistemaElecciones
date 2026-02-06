@@ -1,40 +1,72 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using SistemaElecciones.WebApp.Auth
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+
+<nav class="navbar navbar-expand-lg bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">SistemaElecciones.WebApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+        <a class="navbar-brand text-black-50" href="">
+            <img src="assets/images/favicon.png" class="me-1" alt="logo" />Sistema de Elecciones
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAuth" aria-controls="navbarNavAuth" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse" id="navbarNavAuth">
+            <AuthorizeView>
+                <Authorized>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-black" href="/" Match="NavLinkMatch.All">
+                                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-black" href="campania/list">
+                                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Campañas
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-black" href="candidato/list">
+                                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Candidatos
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-black" href="padron/list">
+                                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Padrón
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link text-black" href="votar/list">
+                                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Votar
+                            </NavLink>
+                        </li>
+                    </ul>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView>
+                <Authorized>
+                    <span class="navbar-text text-danger fs-5 me-3">
+                        <i class="bi bi-person"></i> @context.User.Identity?.Name
+                    </span>
+                    <button class="btn btn-outline-light" @onclick="Logout">Cerrar sesión</button>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="btn btn-outline-light me-2" href="Login">
+                        <i class="bi bi-person-circle-nav-menu" aria-hidden="true"></i> Iniciar Sesión
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
     </div>
-</div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private async Task Logout()
     {
-        collapseNavMenu = !collapseNavMenu;
+        // Lógica para cerrar sesión
+        var auth = (AuthenticationService)AuthenticationStateProvider;
+        await auth.Autenticar(null);
+        NavigationManager.NavigateTo("/login", true);
     }
-
 }
