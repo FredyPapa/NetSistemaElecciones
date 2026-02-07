@@ -1,0 +1,79 @@
+﻿@using SistemaElecciones.Dto.Request
+@inject SweetAlertService Swal
+
+<h2 class="text-uppercase mt-2 mb-4">@Titulo</h2>
+
+<EditForm Model="Request" OnValidSubmit="OnGrabar">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">
+        <div class="col">
+            <label for="denominacion" class="form-label">Denominación</label>
+            <InputText id="denominacion" class="form-control" @bind-Value="Request.Denominacion" placeholder="Ej. Elecciones Generales 2026" />
+            <ValidationMessage For="@(() => Request.Denominacion)" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+            <InputDate id="fechaInicio" class="form-control" @bind-Value="Request.FechaInicio" />
+            <ValidationMessage For="@(() => Request.FechaInicio)" />
+        </div>
+        <div class="col-md-3">
+            <label for="horaInicio" class="form-label">Hora Inicio</label>
+            <input type="time" id="horaInicio" class="form-control" @bind-value="Request.HoraInicio" />
+            <ValidationMessage For="@(() => Request.HoraInicio)" />
+        </div>
+        <div class="col-md-3">
+            <label for="fechaFin" class="form-label">Fecha Fin</label>
+            <InputDate id="fechaFin" class="form-control" @bind-Value="Request.FechaFin" />
+            <ValidationMessage For="@(() => Request.FechaFin)" />
+        </div>
+        <div class="col-md-3">
+            <label for="horaFin" class="form-label">Hora Fin</label>
+            <input type="time" id="horaFin" class="form-control" @bind-value="Request.HoraFin" />
+            <ValidationMessage For="@(() => Request.HoraFin)" />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label for="estado" class="form-label">Estado de la Campaña</label>
+            <InputSelect id="estado" class="form-select" @bind-Value="Request.EstadoCampaniaId">
+                <option value="1">Activo</option>
+                <option value="2">Inactivo / Finalizado</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+            <div class="form-check form-switch mb-2">
+                <InputCheckbox id="votoBlanco" class="form-check-input" @bind-Value="Request.PermiteVotoBlanco" />
+                <label class="form-check-label" for="votoBlanco">Permitir Voto en Blanco</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-end m-0">
+        <div class="col-auto">
+            <NavLink class="btn btn-outline-primary me-2" href="campania/list">
+                <i class="bi bi-x-circle me-1"></i>Cancelar
+            </NavLink>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Guardar Campaña
+            </button>
+        </div>
+    </div>
+    
+    <ValidationSummary />
+</EditForm>
+
+@code {
+    [Parameter] [EditorRequired] public string Titulo { get; set; } = string.Empty;
+    [Parameter] public CampaniaDtoRequest Request { get; set; } = new();
+    [Parameter] [EditorRequired] public EventCallback<CampaniaDtoRequest> OnGuardar { get; set; } 
+
+    private async Task OnGrabar()
+    {
+        await OnGuardar.InvokeAsync(Request);
+    }
+}

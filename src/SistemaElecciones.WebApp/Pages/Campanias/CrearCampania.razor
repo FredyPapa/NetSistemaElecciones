@@ -1,0 +1,35 @@
+﻿@page "/campania/nuevo"
+
+@inject ICampaniaProxy CampaniaProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<EditCampaniaComponent Titulo="Crear Campaña" OnGuardar="OnGrabar"/>
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    public bool IsLoading { get; set; }
+
+    private async Task OnGrabar(CampaniaDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+
+            await CampaniaProxy.CreateAsync<BaseResponse>(request);
+
+            ToastService.ShowSuccess("Se guardó correctamente la campaña");
+            NavigationManager.NavigateTo("campania/list");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+}

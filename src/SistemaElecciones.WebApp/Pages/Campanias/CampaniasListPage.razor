@@ -1,0 +1,62 @@
+﻿@page "/campania/list"
+@using BlazorBootstrap
+@using SistemaElecciones.Dto.Response
+@inject ICampaniaProxy Proxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject SweetAlertService Swal
+
+<div class="row mb-3 mt-3">
+    <div class="col">
+        <div class="mb-2">
+            <label for="filtro" class="form-label">Buscar Campaña:</label>
+            <input type="text" id="filtro" class="form-control" placeholder="Denominación..."
+                   @bind-value="FiltroNombre" @bind-value:event="oninput" />
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-3">
+        <button type="button" class="btn btn-primary" @onclick="OnRefresh">Buscar</button>
+    </div>
+    <div class="col text-end">
+        <button type="button" class="btn btn-success" @onclick="OnNuevo">Nueva Campaña</button>
+    </div>
+</div>
+
+<Grid @ref="Grilla" TItem="CampaniaDtoResponse" Class="table table-hover table-bordered table-striped" 
+      AllowPaging="true" AllowSorting="true" Responsive="true" DataProvider="OnReadData" 
+      HeaderRowCssClass="table-primary" PageSize="PageSize">
+    
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="ID" Sortable="true">
+        @context.Id
+    </GridColumn>
+
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="Campaña" Sortable="true">
+        @context.Denominacion
+    </GridColumn>
+
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="Inicio">
+        @($"{context.FechaInicio} {context.HoraInicio}")
+    </GridColumn>
+
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="Fin">
+        @($"{context.FechaFin} {context.HoraFin}")
+    </GridColumn>
+
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="Estado">
+        <span class="badge @(context.EstadoCampaniaId == "1" ? "bg-success" : "bg-secondary")">
+            @(context.EstadoCampaniaId == "1" ? "Activo" : "Inactivo")
+        </span>
+    </GridColumn>
+
+    <GridColumn TItem="CampaniaDtoResponse" HeaderText="Acciones">
+        <button class="btn btn-sm btn-outline-primary" @onclick="() => OnEditar(context.Id)">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger" @onclick="() => OnEliminar(context.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </GridColumn>
+</Grid>

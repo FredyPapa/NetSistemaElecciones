@@ -8,7 +8,8 @@ public class CampaniaDtoRequest
     public DateOnly FechaFin { get; set; } = DateOnly.FromDateTime(DateTime.Today);
     public TimeOnly HoraFin { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
     public int EstadoCampaniaId { get; set; }
-    public int PermiteVotoBlanco { get; set; }
+    //public int PermiteVotoBlanco { get; set; }
+    public bool PermiteVotoBlanco { get; set; }
     public int UsuarioCreacionId { get; set; }
     public DateOnly FechaCreacion { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 }

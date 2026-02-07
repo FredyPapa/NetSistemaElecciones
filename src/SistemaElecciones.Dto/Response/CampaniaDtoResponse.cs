@@ -10,4 +10,5 @@ public class CampaniaDtoResponse
     public string HoraFin { get; set; } = null!;
     public string EstadoCampaniaId { get; set; }  = null!;
     public string PermiteVotoBlanco { get; set; }  = null!;
+    
 }

@@ -1,0 +1,49 @@
+﻿@page "/campania/editar/{Id:int}"
+
+@inject ICampaniaProxy CampaniaProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<EditCampaniaComponent Titulo="Editar Categoría" OnGuardar="OnGrabar" Request="Request"/>
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    public bool IsLoading { get; set; }
+
+    public CampaniaDtoRequest Request { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            Request = await CampaniaProxy.FindByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+    }
+
+    private async Task OnGrabar(CampaniaDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+
+            await CampaniaProxy.UpdateAsync(Id, Request);
+            ToastService.ShowSuccess("Se actualizó correctamente la campaña");
+            NavigationManager.NavigateTo("campania/list");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

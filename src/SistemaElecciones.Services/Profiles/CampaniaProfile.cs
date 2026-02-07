@@ -29,8 +29,6 @@ public class CampaniaProfile : Profile
         CreateMap<CampaniaDtoRequest, Campania>()
             .ForMember(dest => dest.FechaCreacion, 
                 opt => opt.MapFrom(src => src.FechaCreacion.ToDateTime(TimeOnly.MinValue)))
-            .ForMember(dest => dest.PermiteVotoBlanco, 
-                opt => opt.MapFrom(src => src.PermiteVotoBlanco == 1))
             // Mapeo explícito por diferencia de nombre (U vs u)
             .ForMember(dest => dest.usuarioCreacionId, 
                 opt => opt.MapFrom(src => src.UsuarioCreacionId));
