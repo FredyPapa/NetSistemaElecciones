@@ -1,0 +1,69 @@
+﻿@page "/candidato/list"
+@using BlazorBootstrap
+@using SistemaElecciones.Dto.Response
+@inject ICandidatoProxy Proxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject SweetAlertService Swal
+
+<div class="row mb-3 mt-3">
+    <div class="col">
+        <div class="mb-2">
+            <label for="filtro" class="form-label">Buscar Candidato:</label>
+            <input type="text" id="filtro" class="form-control" placeholder="Nombre o campaña..."
+                   @bind-value="FiltroNombre" @bind-value:event="oninput" />
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-3">
+        <button type="button" class="btn btn-primary" @onclick="OnRefresh">Buscar</button>
+    </div>
+    <div class="col text-end">
+        <button type="button" class="btn btn-success" @onclick="OnNuevo">Nuevo Candidato</button>
+    </div>
+</div>
+
+<Grid @ref="Grilla" TItem="CandidatoDtoResponse" Class="table table-hover table-bordered table-striped" 
+      AllowPaging="true" AllowSorting="true" Responsive="true" DataProvider="OnReadData" 
+      HeaderRowCssClass="table-primary" PageSize="PageSize">
+    
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="Foto">
+        @if (!string.IsNullOrEmpty(context.TrabajadorFotoUrl))
+        {
+            <img src="@context.TrabajadorFotoUrl" alt="Foto" style="width: 40px; height: 40px;" class="rounded-circle" />
+        }
+        else
+        {
+            <i class="bi bi-person-circle fs-3"></i>
+        }
+    </GridColumn>
+
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="Candidato" Sortable="true">
+        @context.TrabajadorNombreCompleto
+    </GridColumn>
+
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="DNI">
+        @context.TrabajadorNroDocumento
+    </GridColumn>
+
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="Campaña" Sortable="true">
+        @context.CampaniaDenominacion
+    </GridColumn>
+
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="Estado">
+        <span class="badge @(context.Estado ? "bg-success" : "bg-secondary")">
+            @(context.Estado ? "Activo" : "Inactivo")
+        </span>
+    </GridColumn>
+
+    <GridColumn TItem="CandidatoDtoResponse" HeaderText="Acciones">
+        <button class="btn btn-sm btn-outline-primary" @onclick="() => OnEditar(context.Id)">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger" @onclick="() => OnEliminar(context.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </GridColumn>
+</Grid>

@@ -1,0 +1,43 @@
+﻿@using SistemaElecciones.Dto.Request
+@inject SweetAlertService Swal
+
+<h2 class="text-uppercase mt-2 mb-4">@Titulo</h2>
+
+<EditForm Model="Request" OnValidSubmit="OnGrabar">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">ID Campaña</label>
+            <InputNumber class="form-control" @bind-Value="Request.CampaniaId" />
+            <ValidationMessage For="@(() => Request.CampaniaId)" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">ID Trabajador</label>
+            <InputNumber class="form-control" @bind-Value="Request.TrabajadorId" />
+            <ValidationMessage For="@(() => Request.TrabajadorId)" />
+        </div>
+    </div>
+
+    @* Campo oculto para el usuario que crea/edita *@
+    <InputNumber @bind-Value="Request.UsuarioId" hidden />
+
+    <div class="row justify-content-end m-0 mt-4">
+        <div class="col-auto">
+            <NavLink class="btn btn-outline-primary me-2" href="candidato/list">
+                <i class="bi bi-x-circle me-1"></i>Cancelar
+            </NavLink>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Guardar Candidato
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public string Titulo { get; set; } = string.Empty;
+    [Parameter] public CandidatoDtoRequest Request { get; set; } = new();
+    [Parameter] public EventCallback<CandidatoDtoRequest> OnGuardar { get; set; }
+
+    private async Task OnGrabar() => await OnGuardar.InvokeAsync(Request);
+}

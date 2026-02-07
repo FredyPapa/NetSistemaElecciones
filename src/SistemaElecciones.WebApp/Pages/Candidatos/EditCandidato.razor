@@ -1,0 +1,44 @@
+﻿@page "/candidato/editar/{Id:int}"
+@using SistemaElecciones.Dto.Request
+@using SistemaElecciones.WebApp.Proxy.Interfaces
+@inject ICandidatoProxy CandidatoProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+@if (Request != null)
+{
+    <EditCandidatoComponent Titulo="Editar Candidato" OnGuardar="OnGrabar" Request="Request"/>
+}
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    public bool IsLoading { get; set; }
+    public CandidatoDtoRequest Request { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try 
+        { 
+            Request = await CandidatoProxy.FindByIdAsync(Id); 
+        }
+        catch (Exception ex) 
+        { 
+            ToastService.ShowError(ex.Message); 
+        }
+    }
+
+    private async Task OnGrabar(CandidatoDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+            await CandidatoProxy.UpdateAsync(Id, Request);
+            ToastService.ShowSuccess("Candidato actualizado");
+            NavigationManager.NavigateTo("candidato/list");
+        }
+        catch (Exception ex) { ToastService.ShowError(ex.Message); }
+        finally { IsLoading = false; }
+    }
+}

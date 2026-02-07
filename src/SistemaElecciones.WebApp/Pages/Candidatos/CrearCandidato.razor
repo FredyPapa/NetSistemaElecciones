@@ -1,0 +1,34 @@
+﻿@page "/candidato/nuevo"
+@using SistemaElecciones.Dto.Request
+@using SistemaElecciones.WebApp.Proxy.Interfaces
+@inject ICandidatoProxy CandidatoProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<EditCandidatoComponent Titulo="Registrar Candidato" OnGuardar="OnGrabar" />
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    public bool IsLoading { get; set; }
+
+    private async Task OnGrabar(CandidatoDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+            await CandidatoProxy.CreateAsync<BaseResponse>(request);
+            //await CandidatoProxy.CreateAsync(request);
+            ToastService.ShowSuccess("Candidato registrado");
+            NavigationManager.NavigateTo("candidato/list");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}
