@@ -1,0 +1,62 @@
+﻿@page "/padron/list"
+@using BlazorBootstrap
+@using SistemaElecciones.Dto.Response
+@inject IPadronProxy Proxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+@inject SweetAlertService Swal
+
+<div class="row mb-3 mt-3">
+    <div class="col">
+        <div class="mb-2">
+            <label for="filtro" class="form-label">Buscar en Padrón:</label>
+            <input type="text" id="filtro" class="form-control" placeholder="Nombre o campaña..."
+                   @bind-value="FiltroNombre" @bind-value:event="oninput" />
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-3">
+        <button type="button" class="btn btn-primary" @onclick="OnRefresh">Buscar</button>
+    </div>
+    <div class="col text-end">
+        <button type="button" class="btn btn-success" @onclick="OnNuevo">Nuevo Registro</button>
+    </div>
+</div>
+
+<Grid @ref="Grilla" TItem="PadronDtoResponse" Class="table table-hover table-bordered table-striped" 
+      AllowPaging="true" AllowSorting="true" Responsive="true" DataProvider="OnReadData" 
+      HeaderRowCssClass="table-primary" PageSize="PageSize">
+    
+    <GridColumn TItem="PadronDtoResponse" HeaderText="ID" Sortable="true">
+        @context.Id
+    </GridColumn>
+    
+    <GridColumn TItem="PadronDtoResponse" HeaderText="Campaña" Sortable="true">
+        @context.CampaniaDenominacion
+    </GridColumn>
+
+    <GridColumn TItem="PadronDtoResponse" HeaderText="DNI">
+        @context.TrabajadorNroDocumento
+    </GridColumn>
+
+    <GridColumn TItem="PadronDtoResponse" HeaderText="Votante" Sortable="true">
+        @context.TrabajadorNombreCompleto
+    </GridColumn>
+
+    <GridColumn TItem="PadronDtoResponse" HeaderText="¿Ya Votó?">
+        <span class="badge @(context.EstadoVoto ? "bg-info" : "bg-warning text-dark")">
+            @(context.EstadoVoto ? "SÍ" : "PENDIENTE")
+        </span>
+    </GridColumn>
+
+    <GridColumn TItem="PadronDtoResponse" HeaderText="Acciones">
+        <button class="btn btn-sm btn-outline-primary" @onclick="() => OnEditar(context.Id)">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-sm btn-outline-danger" @onclick="() => OnEliminar(context.Id)">
+            <i class="bi bi-trash"></i>
+        </button>
+    </GridColumn>
+</Grid>

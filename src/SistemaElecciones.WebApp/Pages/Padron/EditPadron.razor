@@ -1,0 +1,50 @@
+﻿@page "/padron/editar/{Id:int}"
+@using SistemaElecciones.Dto.Request
+@using SistemaElecciones.WebApp.Proxy.Interfaces
+@inject IPadronProxy PadronProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+@if (Request != null)
+{
+    <EditPadronComponent Titulo="Editar Registro de Padrón" OnGuardar="OnGrabar" Request="Request"/>
+}
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    public bool IsLoading { get; set; }
+    public PadronDtoRequest Request { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try 
+        { 
+            Request = await PadronProxy.FindByIdAsync(Id); 
+        }
+        catch (Exception ex) 
+        { 
+            ToastService.ShowError(ex.Message); 
+        }
+    }
+
+    private async Task OnGrabar(PadronDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+            await PadronProxy.UpdateAsync(Id, Request);
+            ToastService.ShowSuccess("Registro actualizado correctamente");
+            NavigationManager.NavigateTo("padron/list");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

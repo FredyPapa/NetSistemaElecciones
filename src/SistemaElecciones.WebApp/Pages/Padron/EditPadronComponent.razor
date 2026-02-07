@@ -1,0 +1,54 @@
+﻿@using SistemaElecciones.Dto.Request
+@inject SweetAlertService Swal
+
+<h2 class="text-uppercase mt-2 mb-4">@Titulo</h2>
+
+<EditForm Model="Request" OnValidSubmit="OnGrabar">
+    <DataAnnotationsValidator />
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label class="form-label">Campaña (ID)</label>
+            <InputNumber class="form-control" @bind-Value="Request.CampaniaId" />
+            <ValidationMessage For="@(() => Request.CampaniaId)" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Trabajador (ID)</label>
+            <InputNumber class="form-control" @bind-Value="Request.TrabajadorId" />
+            <ValidationMessage For="@(() => Request.TrabajadorId)" />
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="form-check form-switch mt-2">
+                <InputCheckbox id="yaVoto" class="form-check-input" @bind-Value="Request.EstadoVoto" />
+                <label class="form-check-label" for="yaVoto">¿Ya emitió su voto?</label>
+            </div>
+        </div>
+    </div>
+
+    @* Campo oculto para auditoría *@
+    <InputNumber @bind-Value="Request.UsuarioId" hidden />
+
+    <div class="row justify-content-end m-0">
+        <div class="col-auto">
+            <NavLink class="btn btn-outline-primary me-2" href="padron/list">
+                <i class="bi bi-x-circle me-1"></i>Cancelar
+            </NavLink>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Guardar Registro
+            </button>
+        </div>
+    </div>
+    
+    <ValidationSummary />
+</EditForm>
+
+@code {
+    [Parameter] [EditorRequired] public string Titulo { get; set; } = string.Empty;
+    [Parameter] public PadronDtoRequest Request { get; set; } = new();
+    [Parameter] [EditorRequired] public EventCallback<PadronDtoRequest> OnGuardar { get; set; }
+
+    private async Task OnGrabar() => await OnGuardar.InvokeAsync(Request);
+}

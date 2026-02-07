@@ -14,8 +14,8 @@ public class CandidatoRepository : RepositoryBase<Candidato>, ICandidatoReposito
     public new async Task<ICollection<Candidato>> ListAsync()
     {
         return await Context.Set<Candidato>()
-            .Include(x => x.Campania)   // Necesario para CampaniaDenominacion
-            .Include(x => x.Trabajador) // Necesario para TrabajadorNombreCompleto
+            .Include(x => x.Campania)
+            .Include(x => x.Trabajador)
             .AsNoTracking()
             .ToListAsync();
     }

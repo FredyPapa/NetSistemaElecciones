@@ -1,0 +1,35 @@
+﻿@page "/padron/nuevo"
+@using SistemaElecciones.Dto.Request
+@using SistemaElecciones.WebApp.Proxy.Interfaces
+@inject IPadronProxy PadronProxy
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<EditPadronComponent Titulo="Habilitar Votante" OnGuardar="OnGrabar"/>
+
+<LoadingComponent IsLoading="IsLoading"/>
+
+@code {
+    public bool IsLoading { get; set; }
+
+    private async Task OnGrabar(PadronDtoRequest request)
+    {
+        try
+        {
+            IsLoading = true;
+            // Recordar usar el tipo de respuesta BaseResponse para evitar el error CS0411
+            await PadronProxy.CreateAsync<BaseResponse>(request);
+
+            ToastService.ShowSuccess("Se habilitó al trabajador correctamente");
+            NavigationManager.NavigateTo("padron/list");
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError(ex.Message);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}
